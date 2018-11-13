@@ -7,7 +7,10 @@ I write this to find how many days I worked from home last financial year.
 # Usage
 
 ```
-go run main.go -username=your-username -password=your-password -month=month-of-activity -year=year-of-activity
+go run main.go \ -username=your-username 
+                 -password=your-password 
+                 -month=month-of-activity 
+                 -year=year-of-activity
 ```
 
 ### Example
