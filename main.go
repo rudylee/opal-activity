@@ -21,8 +21,8 @@ import (
 func main() {
 	username := flag.String("username", "", "Your opal.com.au username")
 	password := flag.String("password", "", "Your opal.com.au password")
-	month := flag.Int("month", 0, "The month of activity")
-	year := flag.Int("year", 0, "The year of activity")
+	month := flag.Int("month", -1, "The month of activity")
+	year := flag.Int("year", -1, "The year of activity")
 
 	flag.Parse()
 
@@ -34,11 +34,11 @@ func main() {
 		log.Fatal("Please provide password")
 	}
 
-	if *month == 0 {
+	if *month == -1 {
 		log.Fatal("Please provide month")
 	}
 
-	if *year == 0 {
+	if *year == -1 {
 		log.Fatal("Please provide year")
 	}
 
@@ -48,11 +48,7 @@ func main() {
 }
 
 func GetMonthlyActivity(month int, year int, page int) {
-	if page == 1 {
-		fmt.Printf("Fetching.")
-	} else {
-		fmt.Print(".")
-	}
+	fmt.Printf("Fetching Month: %d Year: %d Page: %d\n", month, year, page)
 
 	activityUrl := fmt.Sprintf("https://www.opal.com.au/registered/opal-card-transactions/opal-card-activities-list?AMonth=%d&AYear=%d&cardIndex=0&pageIndex=%d", month, year, page)
 
@@ -107,8 +103,8 @@ func GetMonthlyActivity(month int, year int, page int) {
 	nextPage, found := doc.Find("a#next").Attr("href")
 
 	if found {
-		// Sleep for 1 second so we are not hammering Opal website
-		time.Sleep(time.Second)
+		// Sleep for 5 second so we are not hammering Opal website
+		time.Sleep(5 * time.Second)
 		pageIndexRegex := regexp.MustCompile(`pageIndex=(.*)`)
 		match := pageIndexRegex.FindStringSubmatch(nextPage)
 
@@ -124,6 +120,7 @@ func ConvertTravelDateTimeToUnix(dateString string) string {
 }
 
 func Login(cookieFile string, username string, password string) {
+	fmt.Printf("Logging in as %s\n", username)
 	file, err := os.Create(cookieFile)
 
 	if err != nil {
